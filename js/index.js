@@ -1,4 +1,3 @@
-
 var boston = [{
   "City": "Boston",
   "Date": "4/15/19 12:00 AM",
@@ -197,7 +196,32 @@ hand.axis = axis;
 hand.pin.radius = 14;
 hand.startWidth = 10;
 
-//var axis3 = chart.xAxes.push(new am4charts.ValueAxis());
+var axis3 = chart.xAxes.push(new am4charts.ValueAxis());
+// 1) find where the color is black and set to white (we don't 
+// need the needle)
+
+// 2) similar to the loop for the temperature, use a function to
+// get the times in an array
+
+// 3) use a similar process (shift) 
+
+// axis3.min = 0;
+// axis3.max = 100;
+// axis3.strictMinMax = true;
+
+// axis3.renderer.line.strokeOpacity = 1;
+// axis3.renderer.line.strokeWidth = 5;
+// axis3.renderer.line.stroke = chart.colors.getIndex(3);
+// axis3.renderer.ticks.template.stroke = chart.colors.getIndex(3);
+
+// axis3.renderer.ticks.template.strokeOpacity = 1;
+// axis3.renderer.grid.template.disabled = true;
+// axis3.renderer.ticks.template.length = 10;
+// axis3.hiddenState.properties.opacity = 1;
+// axis3.hiddenState.properties.visible = true;
+// axis3.setStateOnChildren = true;
+// axis3.renderer.hiddenState.properties.endAngle = 180;
+
 //axis3.min = 0;
 //axis3.max = 23;
 //axis3.strictMinMax = true;
@@ -227,8 +251,8 @@ hand2.axis = axis2;
 hand2.pin.radius = 10;
 hand2.startWidth = 10;
 
-//var hand3 = chart.hands.push(new am4charts.ClockHand());
-//hand3.fill = axis3.renderer.line.stroke;
+var hand3 = chart.hands.push(new am4charts.ClockHand());
+hand3.fill = axis3.renderer.line.stroke;
 //hand3.stroke = axis3.renderer.line.stroke;
 //hand3.axis = axis3;
 //hand3.pin.radius = 10;
@@ -238,12 +262,13 @@ hand2.startWidth = 10;
 // in setInterval, do a for loop
 actual_data = []
 for_data = []
+time_data = []
 //actual_data2=[]
 //for_data2=[]
 for (let i =0; i<boston.length; i++) {
   actual_data.push(boston[i]["Actual"]) 
   for_data.push(boston[i]["Forecast"])
-  //actual_data2.push(boston[i]["Date"])
+  time_data.push(boston[i]["Date"])
 }
 
 setInterval(() => {
@@ -251,7 +276,9 @@ setInterval(() => {
   label.text = (hand.value) + " ºF";
   hand2.showValue(for_data.shift(), 1000, am4core.ease.cubicOut);
   label2.text = (hand2.value) + " ºF";
-  },2500)
+  hand3.showValue(time_data.shift(),1000,am4core.ease.cubicOut);
+  label3.text = (hand3.value);
+  },5500)
 
 
 // for (let i=0; i<boston.length; i++) {
@@ -284,7 +311,7 @@ legend.data = [{
  "name": "Forecast",
  "fill": chart.colors.getIndex(3)
 }, {
-  "name": "Boston on 04/15/2019",
+  "name": "Boston",
   "fill": chart.colors.getIndex(6)
 }];
 
@@ -310,6 +337,13 @@ label2.x = am4core.percent(60);
 label2.background.stroke = chart.colors.getIndex(3);
 label2.fill = chart.colors.getIndex(3);
 label2.text = "0";
+
+var label3 = labelList.create();
+label3.parent = chart.chartContainer;
+label3.x = am4core.percent(85);
+label3.background.stroke = chart.colors.getIndex(1);
+label3.fill = chart.colors.getIndex(3)
+label3.text= "0";
 
 legend.itemContainers.template.events.on("hit", function(ev) {
  var index = ev.target.dataItem.index;
